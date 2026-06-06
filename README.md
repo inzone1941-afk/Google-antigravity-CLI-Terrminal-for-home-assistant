@@ -52,6 +52,7 @@ For advanced configurations, check out the [Full Add-on Documentation](./gemini-
 This project was built on the incredible work of others in the Home Assistant community:
 
 * **[Tom Cassady (@heytcass)](https://github.com/heytcass)**: For creating the original **[Claude Terminal for Home Assistant](https://github.com/heytcass/home-assistant-addons)** which served as the foundation for this project.
+* **[oded996](https://github.com/oded996)**: For the original **[Gemini Terminal](https://github.com/oded996/gemini-cli-home-assistant-addons)** project which provided the core foundation for this enhanced version.
 * **[Magnus Overli (@magnusoverli)](https://github.com/magnusoverli)**: For **[OpenCode for Home Assistant](https://github.com/magnusoverli/opencode)**, which provided the inspiration and architectural reference for our recent stability refactors.
 
 ## 📜 License
