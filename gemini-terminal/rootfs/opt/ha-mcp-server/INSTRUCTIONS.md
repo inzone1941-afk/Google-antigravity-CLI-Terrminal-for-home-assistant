@@ -45,6 +45,21 @@ Use these tools for Home Assistant system updates:
 | `get_update_progress` | Monitor update progress by job_id |
 | `get_running_jobs` | List all active Supervisor jobs |
 
+## Visual Verification
+
+**Use `screenshot_url` for visual verification of dashboards and UI changes.** This is essential for:
+- Verifying that a new dashboard view or card looks correct
+- Checking the visual state of the energy dashboard
+- Troubleshooting UI-related issues
+- Confirming that a service call had the intended visual effect
+
+The tool returns a PNG image that you can "see" and analyze.
+
+```
+# Screenshot the default dashboard
+screenshot_url(url_path="/lovelace/0")
+```
+
 ```
 # Check for updates
 get_available_updates()
