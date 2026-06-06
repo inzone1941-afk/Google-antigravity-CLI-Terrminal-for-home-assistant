@@ -176,7 +176,11 @@ if [ "$MCP_ENABLED" = "true" ]; then
     jq '.mcpServers["home-assistant"] = {
         "command": "node",
         "args": ["/opt/ha-mcp-server/index.js"],
-        "env": {"SUPERVISOR_TOKEN": "'$SUPERVISOR_TOKEN'"}
+        "env": {
+            "SUPERVISOR_TOKEN": "'$SUPERVISOR_TOKEN'",
+            "HA_ACCESS_TOKEN": "'$ACCESS_TOKEN'",
+            "SCREENSHOT_ENABLED": "'$SCREENSHOT_ENABLED'"
+        }
     }' "$GEMINI_USER_DIR/settings.json" > "$GEMINI_USER_DIR/settings.tmp" && mv "$GEMINI_USER_DIR/settings.tmp" "$GEMINI_USER_DIR/settings.json"
 fi
 

@@ -2356,41 +2356,6 @@ const TOOLS = [
       idempotent: false,
     },
   },
-  {
-    name: "screenshot_url",
-    title: "Screenshot Home Assistant Page",
-    description: "Take a screenshot of any Home Assistant page for visual verification. Use this after making dashboard changes, creating views or cards via hab, or any time you need to visually verify a result. Returns a PNG image that vision-capable AI models can analyze. Requires the 'screenshot_enabled' option and a Long-Lived Access Token. Examples: '/lovelace/0' (default dashboard), '/energy' (energy panel), '/config/dashboard' (settings), '/dashboard-custom/my-view' (custom dashboard).",
-    inputSchema: {
-      type: "object",
-      properties: {
-        url_path: {
-          type: "string",
-          description: "The HA page path to screenshot (e.g., '/lovelace/0', '/energy', '/config/dashboard', '/dashboard-name/view-index')",
-        },
-        width: {
-          type: "number",
-          description: "Viewport width in pixels (default: 1280)",
-        },
-        height: {
-          type: "number",
-          description: "Viewport height in pixels (default: 720)",
-        },
-        wait_seconds: {
-          type: "number",
-          description: "Seconds to wait after page load for dynamic content to render (default: 3, max: 15)",
-        },
-        full_page: {
-          type: "boolean",
-          description: "Capture full scrollable page instead of just viewport (default: false)",
-        },
-      },
-      required: ["url_path"],
-    },
-    annotations: {
-      readOnly: true,
-      idempotent: true,
-    },
-  },
 ];
 
 // ============================================================================

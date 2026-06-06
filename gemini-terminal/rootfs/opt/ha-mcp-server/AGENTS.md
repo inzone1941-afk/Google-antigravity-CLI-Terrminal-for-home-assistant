@@ -90,6 +90,7 @@ A CLI tool designed for AI agents to manage Home Assistant. Run `hab` commands v
 - **Events**: `hab event list`, `hab event fire my_custom_event --data '{"key": "value"}'`
 - **Templates**: `hab template render --expression "{{ states('sensor.temperature') }}"`
 - **Search**: `hab search related`
+- **Visual Verification**: `ha-screenshot /lovelace/0` (takes a PNG screenshot of a page and saves it to /tmp/screenshot.png). ALWAYS use this if the `screenshot_url` MCP tool is unavailable or if you need to confirm visual layout.
 
 `hab` outputs human-readable text by default. Use `--json` for structured JSON output (ideal for parsing).
 `hab` is pre-authenticated via the Supervisor token - no login required.

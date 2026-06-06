@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# ha-screenshot CLI wrapper
+
+# Ensure we have the right environment for Node modules
+export NODE_PATH="/opt/ha-mcp-server/node_modules"
+
+# Source environment variables if available
+if [ -f /data/.env_vars ]; then
+    source /data/.env_vars
+fi
+
+# Run the Node script
+node /opt/ha-mcp-server/ha-screenshot.js "$@"
