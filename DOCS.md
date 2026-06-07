@@ -1,8 +1,8 @@
-# Gemini Terminal Home Assistant Add-on Documentation
+# Antigravity CLI Terminal Home Assistant Add-on Documentation
 
 ## Overview
 
-Gemini Terminal provides a web-based terminal interface with the Google **Gemini CLI** pre-installed, allowing you to access Gemini's powerful AI capabilities directly from your Home Assistant dashboard. Gemini CLI is an AI coding assistant by Google that can help you with Home Assistant configuration, automation creation, debugging, and general coding tasks.
+Antigravity CLI Terminal provides a web-based terminal interface with the Google **Antigravity CLI** (`agy`) pre-installed, allowing you to access Antigravity's powerful AI agent capabilities directly from your Home Assistant dashboard. Antigravity is an AI coding agent by Google that can help you with Home Assistant configuration, automation creation, debugging, and general coding tasks.
 
 ## Installation
 
@@ -11,75 +11,85 @@ Follow these steps to install the add-on:
 1. Navigate to your Home Assistant instance
 2. Go to **Settings** -> **Add-ons** -> **Add-on Store**
 3. Click the three dots (top right corner) and select **"Repositories"**
-4. Add the URL of this repository: `https://github.com/inzone1941-afk/gemini-cli-home-assistant-addons` and click **"Add"**
-5. Find the **"Gemini CLI Terminal"** add-on and click on it
+4. Add the URL of this repository: `https://github.com/inzone1941-afk/Google-antigravity-CLI-Terrminal-for-home-assistant` and click **"Add"**
+5. Find the **"Antigravity CLI Terminal"** add-on and click on it
 6. Click **"Install"**
 
 ## Configuration
 
-The add-on works out of the box using OAuth authentication. However, you can also provide a `gemini_api_key` in the configuration tab for a "headless" login experience.
+The add-on works out of the box using OAuth authentication. However, you can also provide an `antigravity_api_key` in the configuration tab for a "headless" login experience.
+
+### Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `antigravity_api_key` | `""` | Optional Google Gemini/Antigravity API key for headless authentication |
+| `enable_ha_mcp` | `true` | Enable Home Assistant MCP server integration. |
+| `ha_smart_context` | `true` | Automatically generate HA context (`ANTIGRAVITY.md`) for AI awareness. |
+| `auto_launch_antigravity` | `true` | Automatically start Antigravity when opening the terminal |
+| `persistent_apt_packages` | `[]` | APT packages to install on every startup. |
+| `persistent_pip_packages` | `[]` | Python packages to install on every startup. |
 
 ## Usage
 
-The Gemini CLI launches automatically when you open the terminal. You can interact with it using the following commands:
+The Antigravity CLI launches automatically when you open the terminal. You can interact with it using the following commands:
 
 ### Common Commands
 
-- `gemini` - Start an interactive Gemini session
-- `gemini --help` - See all available commands
-- `gemini "your prompt"` - Ask Gemini a single question or provide a direct command
-- `gemini -r latest` - Resume your most recent conversation
-- `ha-context --full` - Refresh the Home Assistant context (`GEMINI.md`) with full entity details
+- `agy` - Start an interactive Antigravity session
+- `agy --help` - See all available commands
+- `gemini` - Alias command for `agy` to preserve muscle memory
+- `ha-context --full` - Refresh the Home Assistant context (`ANTIGRAVITY.md`) with full entity details
 
-Your session data and configuration are stored in `/data/.config/gemini`, which persists between restarts.
+Your session data and configuration are stored in `/data/.gemini/antigravity-cli`, which persists between restarts.
 
 ## Home Assistant-Specific Use Cases
 
-Gemini Terminal is particularly useful for Home Assistant tasks. Because it has a built-in **MCP (Model Context Protocol)** server and access to a generated **GEMINI.md** context file, it knows your system intimately.
+Antigravity CLI Terminal is particularly useful for Home Assistant tasks. Because it has a built-in **MCP (Model Context Protocol)** server and access to a generated **ANTIGRAVITY.md** context file, it knows your system intimately.
 
 ### 1. Automation Creation and Debugging
 
 ```
 # Ask about your home state
-gemini "Which lights are currently on?"
+agy "Which lights are currently on?"
 
 # Create a new automation
-gemini "create an automation that turns on the porch lights when the front door opens, but only after sunset"
+agy "create an automation that turns on the porch lights when the front door opens, but only after sunset"
 ```
 
 ### 2. YAML Configuration Help
 
 ```
 # Get help with syntax
-gemini "what's wrong with this YAML? [paste YAML]"
+agy "what's wrong with this YAML? [paste YAML]"
 
 # Analyze your current config
-gemini "Analyze my /config/configuration.yaml and suggest improvements"
+agy "Analyze my /config/configuration.yaml and suggest improvements"
 ```
 
 ### 3. Entity Management
 
 ```
 # Clean up entity names
-gemini "suggest better names for these entities: [paste entity list]"
+agy "suggest better names for these entities: [paste entity list]"
 
 # Create a template sensor
-gemini "create a template sensor that averages all my temperature sensors"
+agy "create a template sensor that averages all my temperature sensors"
 ```
 
 ## Safety & Guardrails
 
-Gemini Terminal is designed to be powerful but safe. It includes several built-in guardrails to prevent accidental or destructive changes:
+Antigravity Terminal is designed to be powerful but safe. It includes several built-in guardrails to prevent accidental or destructive changes:
 
 ### 1. Interactive Approvals
-By default, the Gemini CLI will **never** modify a file or execute a shell command without your explicit permission. It will show you a **diff** of the proposed changes and ask for a confirmation (`y/n`).
+By default, the Antigravity CLI will **never** modify a file or execute a shell command without your explicit permission. It will show you a **diff** of the proposed changes and ask for confirmation.
 
-### 2. Plan Mode (Dry-Run)
-If you want to explore solutions without any risk of modification, you can launch Gemini in **Plan Mode**:
+### 2. Sandbox Mode (Dry-Run)
+If you want to explore solutions without any risk of modification, you can launch Antigravity in **Sandbox Mode**:
 ```bash
-gemini --approval-mode plan
+agy --sandbox
 ```
-In this mode, Gemini can read your configuration and propose changes, but it is strictly forbidden from executing any tools that modify your system or files.
+In this mode, Antigravity is strictly forbidden from executing any tools that modify your system or files outside of the sandbox.
 
 ### 3. Home Assistant Backups
 Because this add-on operates on your live `/config` directory, we always recommend ensuring you have a recent **Home Assistant backup** before performing major AI-driven refactoring of your YAML files.
@@ -95,7 +105,7 @@ Check the add-on logs for detailed information about any issues:
 
 ## Security Considerations
 
-Gemini Terminal is designed with security in mind:
+Antigravity Terminal is designed with security in mind:
 
 - The add-on runs in an isolated container.
 - Your code and queries go directly to Google's API.
@@ -110,8 +120,8 @@ Special thanks to the original author for the excellent foundation in containeri
 ## Support
 
 - For issues with the add-on itself, please open an issue on the GitHub repository.
-- For Gemini CLI-specific issues, refer to the [Google documentation](https://github.com/google/gemini-cli).
+- For Antigravity CLI-specific issues, refer to the [Google documentation](https://antigravity.google).
 
 ## License
 
-This repository is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. Gemini CLI itself is subject to Google's Terms of Service.
+This repository is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. Antigravity CLI itself is subject to Google's Terms of Service.

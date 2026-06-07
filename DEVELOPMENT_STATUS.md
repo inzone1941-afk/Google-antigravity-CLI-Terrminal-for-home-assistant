@@ -1,48 +1,32 @@
-# Gemini Terminal Add-on - Development Status
+# Antigravity CLI Terminal Add-on - Development Status
 
 ## Project Overview
-Refitting the Home Assistant add-on to support Google's Gemini CLI, including interactive session management, Home Assistant MCP integration, and automated context generation.
+Refitting the Home Assistant add-on to support Google's Antigravity CLI (`agy`), including interactive session management, Home Assistant MCP integration, and automated context generation.
 
-## Current Status: 🟢 **Stable Release (v1.1.0)**
+## Current Status: 🟢 **Stable Release (v3.0.0)**
 
 ### ✅ **Completed Tasks**
 
 #### Core Implementation
-- ✅ **Gemini CLI Integration**: Successfully installed and configured `@google/gemini-cli`.
-- ✅ **Port 7682**: Updated default port to avoid conflicts.
-- ✅ **API Key Support**: Added `gemini_api_key` to add-on configuration for headless login.
-- ✅ **Alpine coreutils**: Fixed `env -S` shebang issues.
-- ✅ **Session Persistence**: Built-in `tmux` support for conversation persistence.
+- ✅ **Antigravity CLI Integration**: Successfully installed and configured Google's Antigravity CLI (`agy`).
+- ✅ **API Key Support**: Added `antigravity_api_key` to add-on configuration for headless login.
+- ✅ **Session Persistence**: Built-in `tmux` support for conversation persistence across Web UI reconnections.
 - ✅ **Home Assistant MCP**: Pre-installed and configured `ha-mcp` for natural language control.
-- ✅ **Smart Context**: Automated generation of `GEMINI.md` for AI system awareness.
+- ✅ **Smart Context**: Automated generation of `ANTIGRAVITY.md` for AI system awareness.
 
 #### Testing & Validation
 - ✅ **Authentication**: Verified both OAuth and API key authentication flows.
-- ✅ **MCP Integration**: Verified `/mcp list` shows active Home Assistant connection.
+- ✅ **MCP Integration**: Verified MCP list shows active Home Assistant connection.
 - ✅ **Persistence**: Verified session data and credentials survive container restarts.
-- ✅ **Multi-Arch**: Validated build configuration for amd64, aarch64, and armv7.
-
-### 🎯 **Future Roadmap**
-
-#### 1. **Visual Branding**
-- [ ] Create custom Gemini-branded icon and logo (currently using placeholder colorful star).
-- [ ] Add more screenshots of the stable UI to documentation.
-
-#### 2. **Enhanced Context**
-- [ ] Allow customization of `ha-context` frequency or detail level via configuration.
-- [ ] Add support for custom user-provided context files.
-
-#### 3. **Tool Improvements**
-- [ ] Explore deeper integration with Home Assistant's event bus.
-- [ ] Add support for local file analysis tools within the CLI.
+- ✅ **Multi-Arch**: Validated build configuration for amd64 and aarch64.
 
 ### 🏗 **Implementation Details**
 
-#### Key Files
-- `gemini-terminal/config.yaml` - Main add-on configuration and schema.
-- `gemini-terminal/run.sh` - Advanced startup and environment management.
-- `gemini-terminal/scripts/ha-context.sh` - Automated HA state awareness.
-- `gemini-terminal/scripts/setup-ha-mcp.sh` - Stable MCP server configuration.
+#### Key Files and Directories
+- `antigravity-terminal/config.yaml` - Main add-on configuration and schema.
+- `antigravity-terminal/rootfs/etc/s6-overlay/s6-rc.d/init-antigravity/run` - Advanced startup and environment initialization.
+- `antigravity-terminal/rootfs/etc/s6-overlay/s6-rc.d/ha-antigravity/run` - Service manager for ttyd and session management.
+- `antigravity-terminal/rootfs/usr/local/bin/ha-context` - Automated HA state awareness document generator.
 
 ### 🔍 **Summary**
-The project has successfully transitioned from a fork of Claude Terminal to a fully functional, stable Gemini Terminal add-on. All critical blockers (shebang issues, MCP stability, and API key recognition) have been resolved in the v1.1.0 release.
+The project has successfully transitioned to the official Antigravity CLI (`agy`) as of the v3.0.0 release. All configuration variables, directories, scripts, and documentation have been rebranded to reflect the Antigravity system.

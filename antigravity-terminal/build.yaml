@@ -1,0 +1,13 @@
+---
+build_from:
+  aarch64: ghcr.io/home-assistant/aarch64-base-debian:trixie
+  amd64: ghcr.io/home-assistant/amd64-base-debian:trixie
+
+args:
+  TTYD_VERSION: "1.7.7"
+
+labels:
+  org.opencontainers.image.title: "Antigravity CLI Terminal"
+  org.opencontainers.image.description: "Terminal interface for Google's Antigravity CLI with deep MCP integration"
+  org.opencontainers.image.source: "https://github.com/inzone1941-afk/Google-antigravity-CLI-Terrminal-for-home-assistant"
+  org.opencontainers.image.licenses: "Apache-2.0"

@@ -1,0 +1,100 @@
+---
+name: "Antigravity CLI Terminal"
+description: "Terminal interface for Google's Antigravity CLI with deep MCP integration"
+version: "3.0.0"
+slug: "antigravity_terminal"
+url: "https://github.com/inzone1941-afk/Google-antigravity-CLI-Terrminal-for-home-assistant"
+arch:
+  - aarch64
+  - amd64
+startup: application
+init: false
+
+# Ingress configuration
+ingress: true
+ingress_port: 8099
+ingress_stream: true
+panel_icon: mdi:account-circle-outline
+panel_title: "Antigravity CLI"
+
+# File access - Home Assistant config directory
+map:
+  - config:rw
+
+# API access
+hassio_api: true
+hassio_role: manager
+homeassistant_api: true
+
+# Security
+host_network: false
+privileged: []
+apparmor: true
+
+# User-configurable options
+options:
+  antigravity_api_key: ""
+  enable_ha_mcp: true
+  persistent_apt_packages: []
+  persistent_pip_packages: []
+  auto_launch_antigravity: true
+  ha_smart_context: true
+  custom_instructions: ""
+
+  # Terminal appearance
+  terminal_theme: "breeze"
+  font_size: 14
+  cursor_style: "block"
+  cursor_blink: false
+
+  # Screenshot tool: enables visual verification of dashboards and UI changes.
+  screenshot_enabled: false
+
+  # Long-lived access token for direct HA Core API access.
+  access_token: ""
+
+  # Zigbee2MQTT configuration
+  z2m_url: ""
+  z2m_mqtt_topic: "zigbee2mqtt"
+
+  # Environment variables to inject into the container
+  env_vars: []
+
+schema:
+  antigravity_api_key: password?
+  auto_launch_antigravity: bool?
+  enable_ha_mcp: bool?
+  ha_smart_context: bool?
+  custom_instructions: str?
+  persistent_apt_packages:
+    - str
+  persistent_pip_packages:
+    - str
+
+  # Terminal appearance
+  terminal_theme: list(breeze|catppuccin_mocha|catppuccin_latte|dracula|nord|tokyo_night|one_dark|solarized_dark|solarized_light|gruvbox_dark)
+  font_size: int(10,24)
+  cursor_style: list(block|underline|bar)
+  cursor_blink: bool
+
+  # Screenshot tool
+  screenshot_enabled: bool
+
+  # HA Core access token
+  access_token: password?
+
+  # Zigbee2MQTT (optional)
+  z2m_url: str?
+  z2m_mqtt_topic: str?
+
+  # Environment variables
+  env_vars:
+    - name: str
+      value: str
+
+# Exclude caches from backups
+backup_exclude:
+  - ".npm/*"
+  - ".cache/*"
+  - ".local/share/gemini/cache/*"
+  - ".env_vars"

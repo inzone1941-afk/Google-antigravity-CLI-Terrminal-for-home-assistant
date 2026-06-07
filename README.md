@@ -11,8 +11,8 @@ Antigravity CLI Terminal provides an AI-driven, persistent web terminal pre-conf
 * **Google Antigravity CLI Integration**: A full-featured web terminal with the official Antigravity CLI (`agy`) pre-installed.
 * **Native Home Assistant Control**: Thanks to the integrated `ha-mcp` server, Antigravity can read states, call services, and interact with your entities natively.
 * **Session Persistence**: Built-in `tmux` support means you can navigate away or refresh without losing your terminal session or AI conversation.
-* **Smart Environment Context**: Automatically creates a `GEMINI.md` (and `.antigravityignore` / `.aiexclude`) file loaded with system info, architecture, and recent logs to ground the AI in your specific setup.
-* **Seamless Authentication**: Configure your `gemini_api_key` straight from the Home Assistant add-on UI, automatically loaded as `GOOGLE_API_KEY` for authentication.
+* **Smart Environment Context**: Automatically creates an `ANTIGRAVITY.md` (and `.antigravityignore` / `.aiexclude`) file loaded with system info, architecture, and recent logs to ground the AI in your specific setup.
+* **Seamless Authentication**: Configure your `antigravity_api_key` straight from the Home Assistant add-on UI, automatically loaded as `GOOGLE_API_KEY` for authentication.
 * **Direct Config Access**: Boots directly into your `/config` directory for immediate YAML editing and troubleshooting.
 
 ## 📦 Installation
@@ -36,16 +36,16 @@ Click the button below to add this repository directly to your Home Assistant in
 ## ⚙️ Configuration & Usage
 
 1. After installation, go to the add-on's **Configuration** tab.
-2. Enter your `gemini_api_key` (highly recommended for seamless startup).
+2. Enter your `antigravity_api_key` (highly recommended for seamless startup).
 3. Start the add-on.
 4. Click **Open Web UI** (or enable the "Show in sidebar" toggle) to access your terminal!
 
-For advanced configurations, check out the [Full Add-on Documentation](./gemini-terminal/DOCS.md).
+For advanced configurations, check out the [Full Add-on Documentation](./antigravity-terminal/DOCS.md).
 
 ## 📖 Documentation & Logs
 
-* [Full Add-on Documentation](./gemini-terminal/DOCS.md)
-* [Changelog](./gemini-terminal/CHANGELOG.md)
+* [Full Add-on Documentation](./antigravity-terminal/DOCS.md)
+* [Changelog](./antigravity-terminal/CHANGELOG.md)
 
 ## 🤝 Credits & Inspiration
 

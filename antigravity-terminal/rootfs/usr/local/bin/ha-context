@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# =============================================================================
+# ha-context - Generate Home Assistant system context for Antigravity AI
+# =============================================================================
+
+set -e
+
+# Load environment variables if available
+if [ -f /data/.env_vars ]; then
+    source /data/.env_vars
+fi
+
+if [ -z "$SUPERVISOR_TOKEN" ]; then
+    echo "Error: SUPERVISOR_TOKEN not set."
+    exit 1
+fi
+
+CONTEXT_FILE="/homeassistant/ANTIGRAVITY.md"
+API_BASE="http://supervisor"
+
+echo "Generating Home Assistant context..."
+
+{
+    echo "# Home Assistant System Context"
+    echo "Generated on: $(date)"
+    echo ""
+    
+    echo "## System Information"
+    curl -s -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" "${API_BASE}/core/info" | jq -r '"- Core Version: \(.data.version)\n- Machine: \(.data.machine)\n- Arch: \(.data.arch)"' 2>/dev/null || echo "Info unavailable"
+    echo ""
+    
+    echo "## Installed Add-ons"
+    curl -s -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" "${API_BASE}/addons" | jq -r '.data.addons[] | select(.state == "started") | "- \(.name) (\(.version))"' 2>/dev/null || echo "Add-ons unavailable"
+    echo ""
+    
+    echo "## Recent Entities & States"
+    echo "Showing significant entities (non-binary sensors, lights, switches, media players):"
+    curl -s -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" "${API_BASE}/core/api/states" | \
+        jq -r '.[] | select(.entity_id | split(".")[0] | IN("light", "switch", "sensor", "media_player", "climate", "vacuum")) | "- \(.entity_id): \(.state) (\(.attributes.friendly_name // "No name"))"' | \
+        head -n 50 || echo "Entities unavailable"
+    echo ""
+    
+    echo "## Recent Errors"
+    curl -s -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" "${API_BASE}/core/api/error_log" | tail -n 20 | sed 's/^/    /' || echo "No recent errors found."
+    echo ""
+    
+    echo "## Instructions for Antigravity"
+    echo "Use this context to understand the Home Assistant environment. You can control these entities using the provided MCP tools."
+    if [ -n "${CUSTOM_INSTRUCTIONS}" ] && [ "${CUSTOM_INSTRUCTIONS}" != "null" ]; then
+        echo ""
+        echo "### Custom User Instructions"
+        echo "${CUSTOM_INSTRUCTIONS}"
+    fi
+} > "${CONTEXT_FILE}.tmp"
+
+mv "${CONTEXT_FILE}.tmp" "${CONTEXT_FILE}"
+echo "Context updated: ${CONTEXT_FILE}"

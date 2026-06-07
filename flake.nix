@@ -34,7 +34,7 @@
           shellHook = ''
             echo "🏠 Home Assistant Add-on Development Environment"
             echo "Available commands:"
-            echo "  build-addon     - Build the Gemini Terminal add-on"
+            echo "  build-addon     - Build the Antigravity CLI Terminal add-on"
             echo "  run-addon       - Run the add-on locally"  
             echo "  validate-addon  - Validate add-on structure"
             echo "  lint-dockerfile - Lint the Dockerfile"
@@ -43,10 +43,10 @@
             echo "To get started: build-addon"
             
             # Create convenience aliases
-            alias build-addon='podman build --build-arg BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.21 -t local/gemini_terminal ./gemini-terminal'
-            alias run-addon='podman run -p 7682:7682 -v $(pwd)/config:/config local/gemini_terminal'
+            alias build-addon='podman build --build-arg BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.21 -t local/antigravity_terminal ./antigravity-terminal'
+            alias run-addon='podman run -p 7682:7682 -v $(pwd)/config:/config local/antigravity_terminal'
             alias validate-addon='echo "Note: Home Assistant builder validation requires HA OS environment"'
-            alias lint-dockerfile='hadolint ./gemini-terminal/Dockerfile'
+            alias lint-dockerfile='hadolint ./antigravity-terminal/Dockerfile'
             alias test-endpoint='curl -X GET http://localhost:7682/ || echo "Add-on not running. Use: run-addon"'
           '';
         };

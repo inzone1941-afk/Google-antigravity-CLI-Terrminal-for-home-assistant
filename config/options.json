@@ -1,1 +1,4 @@
-auto_launch_gemini: false
+{
+  "auto_launch_antigravity": false,
+  "custom_instructions": "Be extra helpful with Lovelace dashboards and ESPHome configuration."
+}
