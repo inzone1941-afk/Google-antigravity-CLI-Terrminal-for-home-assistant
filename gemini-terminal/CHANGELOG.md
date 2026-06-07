@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.0
+- **🚀 Migration to Google's Antigravity CLI**
+  - Fully migrated the add-on from the legacy Gemini CLI to Google's native Go-based **Antigravity CLI** (`agy`).
+  - Added a backward-compatibility wrapper symlink (`/usr/local/bin/gemini`) pointing to `agy` so existing command lines and scripts continue to work seamlessly.
+  - Re-mapped configuration directory structures to `/data/.gemini/antigravity-cli/` and configuration settings to `settings.json` and `mcp_config.json`.
+  - Added support for `.antigravityignore` and `.aiexclude` to control file indexing in the new agentic engine.
+  - Renamed the default logs, banners, interactive session picker, and tmux namespaces to reflect the Antigravity transition.
+  - Fixed configuration handling where the `auto_launch_gemini` and `ha_smart_context` defaults were ignored or missing from the options schema.
+
 ## 2.6.4
 - **🚀 Major Stability Refactor**
   - Completely refactored the add-on foundation with stability improvements inspired by the **OpenCode** project (https://github.com/magnusoverli/opencode/).
