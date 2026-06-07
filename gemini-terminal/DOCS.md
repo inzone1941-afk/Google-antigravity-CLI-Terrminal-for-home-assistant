@@ -8,7 +8,7 @@ This add-on provides a web-based terminal with the Google Antigravity CLI (`agy`
 
 ## Installation
 
-1. Add this repository to your Home Assistant add-on store: `https://github.com/inzone1941-afk/gemini-cli-home-assistant-addons`
+1. Add this repository to your Home Assistant add-on store: `https://github.com/inzone1941-afk/antigravity-cli-home-assistant-addons`
 2. Install the **Antigravity CLI Terminal** add-on.
 3. Start the add-on.
 4. Click **"OPEN WEB UI"** to access the terminal.

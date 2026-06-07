@@ -46,7 +46,7 @@ ha-context
 ## Installation
 
 1. Add this repository to your Home Assistant: 
-   `https://github.com/inzone1941-afk/gemini-cli-home-assistant-addons`
+   `https://github.com/inzone1941-afk/antigravity-cli-home-assistant-addons`
 2. Install the **Antigravity CLI Terminal** add-on.
 3. Enter your **Google API Key** in the **Configuration** tab for a seamless experience.
 4. Start the add-on.
@@ -76,7 +76,7 @@ This project is developed and maintained by **Roland (@inzone1941-afk)**. It is 
 
 This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details. Antigravity CLI is subject to Google's Terms of Service.
 
-[license-shield]: https://img.shields.io/github/license/inzone1941-afk/gemini-cli-home-assistant-addons.svg
-[license]: https://github.com/inzone1941-afk/gemini-cli-home-assistant-addons/blob/main/LICENSE
+[license-shield]: https://img.shields.io/github/license/inzone1941-afk/antigravity-cli-home-assistant-addons.svg
+[license]: https://github.com/inzone1941-afk/antigravity-cli-home-assistant-addons/blob/main/LICENSE
 [maintainer-shield]: https://img.shields.io/badge/maintainer-inzone1941--afk-blue.svg
 [maintainer]: https://github.com/inzone1941-afk
