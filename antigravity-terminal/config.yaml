@@ -92,9 +92,14 @@ schema:
     - name: str
       value: str
 
-# Exclude caches from backups
+# Exclude caches and runtime-generated files from backups
 backup_exclude:
   - ".npm/*"
   - ".cache/*"
   - ".local/share/gemini/cache/*"
   - ".env_vars"
+  - ".gemini/antigravity-cli/mcp_config.json"
+  - ".local/share/antigravity-venv/*"
+  - ".config/gemini/logs/*"
+  - "*.pyc"
+  - "__pycache__/*"

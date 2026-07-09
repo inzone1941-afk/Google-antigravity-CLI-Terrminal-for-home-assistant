@@ -3,7 +3,7 @@
 # ha-mcp - Helper script to manage the Home Assistant MCP server
 # =============================================================================
 
-set -e
+set -euo pipefail
 
 # Load environment variables if available
 if [ -f /data/.env_vars ]; then
@@ -44,15 +44,14 @@ enable_mcp() {
     ensure_config
     
     if command -v jq &> /dev/null; then
+        # Tokens (SUPERVISOR_TOKEN, HA_ACCESS_TOKEN, SCREENSHOT_ENABLED) are NOT
+        # stored in this file. They are available in the environment at runtime
+        # via /data/.env_vars (chmod 600), preventing token leakage in backups.
         jq '.mcpServers["home-assistant"] = {
             "command": "node",
-            "args": ["/opt/ha-mcp-server/index.js"],
-            "env": {
-                "SUPERVISOR_TOKEN": "'$SUPERVISOR_TOKEN'",
-                "HA_ACCESS_TOKEN": "'$HA_ACCESS_TOKEN'",
-                "SCREENSHOT_ENABLED": "'$SCREENSHOT_ENABLED'"
-            }
+            "args": ["/opt/ha-mcp-server/index.js"]
         }' "$CONFIG_FILE" > "${CONFIG_FILE}.tmp" && mv "${CONFIG_FILE}.tmp" "$CONFIG_FILE"
+        chmod 600 "$CONFIG_FILE"
         echo "Home Assistant MCP server enabled!"
     else
         echo "Error: jq is required but not installed"
@@ -80,7 +79,12 @@ show_status() {
     
     if command -v jq &> /dev/null; then
         local enabled
-        enabled=$(jq -r '.mcpServers["home-assistant"] != null' "$CONFIG_FILE" 2>/dev/null || echo "false")
+        # Use explicit exit code check rather than relying on || with set -euo pipefail
+        if enabled=$(jq -r '.mcpServers["home-assistant"] != null' "$CONFIG_FILE" 2>/dev/null); then
+            : # jq succeeded
+        else
+            enabled="false"
+        fi
         
         if [ "$enabled" = "true" ]; then
             echo "Home Assistant MCP server: ENABLED"

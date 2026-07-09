@@ -5,6 +5,22 @@
   - Fully rebranded s6 services, internal scripts, workflows, and logs to Antigravity.
   - Added user instructions in `AGENTS.md` to define the AI as an elite programmer and dashboard designer.
   - Introduced the `custom_instructions` configuration option in `config.yaml` to allow user-defined system prompts injected directly into `ANTIGRAVITY.md`.
+- **🔐 Security hardening (code audit)**
+  - Tokens (`SUPERVISOR_TOKEN`, `HA_ACCESS_TOKEN`) are no longer stored in `mcp_config.json`; they are injected via the environment at runtime from the chmod-600 `/data/.env_vars` file.
+  - `mcp_config.json` is now chmod 600 to prevent world-readable leakage.
+  - Added URL allowlist to the screenshot tool (`lib/screenshot.js`) – only private-network and localhost HA origins are permitted, preventing SSRF-style misuse of the sandboxless headless browser.
+  - `antigravity-session.sh` now verifies ownership and permissions of `/data/.env_vars` before sourcing it.
+  - `ha-mcp` upgraded to `set -euo pipefail` for stricter error handling.
+- **🧹 Code quality**
+  - Extracted `callHA()`, `callSupervisor()`, `discoverHACoreUrl()` from `index.js` into `lib/ha-api.js`.
+  - Extracted `takeScreenshot()` and `validateScreenshotUrl()` into `lib/screenshot.js`.
+  - Synchronised `package.json` version (`3.0.1`) with `config.yaml`.
+- **🐳 Docker**
+  - Added `HEALTHCHECK` to the Dockerfile so the Supervisor can detect a stuck container.
+  - Switched from `npm install` to `npm ci` for reproducible, lock-file-driven builds.
+  - Added inline documentation for the Chromium install to clarify its optional nature in custom builds.
+- **📦 Backup improvements**
+  - Extended `backup_exclude` in `config.yaml` to exclude additional cache and temp paths.
 
 ## 3.0.0
 - **🚀 Migration to Google's Antigravity CLI**
@@ -25,152 +41,11 @@
   - **Improved Config Schema**: Updated `map` property and access token schema for better compatibility with the latest Home Assistant standards.
   - **Better TTY Handling**: Enhanced terminal session management for more reliable keyboard input and session persistence.
 
-## 2.0.5
-- **🔍 Improved Log Visibility**
-  - Implemented real-time log streaming from Gemini internal logs to the Home Assistant "Logs" tab.
-  - Internal Gemini events will now appear with a `[Gemini-Internal]` prefix.
-
-
-## 2.0.4
-- **🛠️ Log Mirroring & Boot Fix**
-  - Reverted direct log writing to fix boot failures.
-  - Implemented background log mirroring to `/config/gemini-logs` for safe, read-only access.
-  - Kept 4GB RAM unlock and disabled sandbox for maximum stability.
-
-
-## 2.0.3
-- **🛠️ Log Access & Stability Fix**
-  - Changed internal log path to a real folder (`/config/gemini-logs`) to fix "Access Denied" errors in File Editor.
-  - Explicitly disabled Gemini sandbox (`--sandbox false`) for better container compatibility.
-
-
-## 2.0.2
-- **⚙️ Memory & Diagnostics Fix**
-  - Increased RAM limit to 4GB and CPU to 4.0.
-  - Explicitly allocated 4GB to Node.js heap to prevent OOM crashes on complex tasks.
-  - Created `/config/gemini-logs` symlink for easier access to internal logs.
-  - Added `/config/gemini_system.log` to track resource limits.
-
-
-## 2.0.1
-- **🛡️ Timeout & Performance Fix**
-  - Reduced ttyd ping-interval to 5s to prevent Home Assistant Ingress timeouts during long tasks.
-  - Added default `.geminiignore` to skip large database files, improving directory scan speed.
-
-
-## 2.0.7
-- **⚡ Interface Stability Fix**
-  - Disabled experimental background tasks (`--experimental-acp false`) that caused terminal corruption and crashes during large outputs.
-  - Forced stable interactive mode to prevent V8 engine assertion failures.
-
-
-## 2.2.3
-- **🛡️ Strict Isolation Fix**
-  - Permanently removed `gemini-logs` from the config directory to break recursive crash loops.
-  - Switched terminal renderer to `canvas` to improve text selection/copy support in browser iframes.
-  - Added `GEMINI_MAX_FILE_SIZE_BYTES` limit to prevent memory exhaustion on large files.
-
-
-## 2.2.2
-- **🛠️ Fixed Startup & Clipboard**
-  - Fixed "stack-size not allowed" error by passing the flag directly to the Node binary.
-  - Forced clipboard support with `enableClipboard=true` to fix copy issues.
-  - Improved background launch reliability.
-
-
-## 2.3.0
-- **🛠️ Interactivity & Config Fix**
-  - Fixed "No input provided via stdin" by switching to passive tmux logging.
-  - Fixed invalid `settings.json` format causing startup errors.
-  - Maintains full crash diagnostics in `/config/gemini_crash.log` without breaking the TTY.
-
-
-## 2.2.9
-- **🛠️ Fix Startup Error**
-  - Removed invalid `autocomplete` arguments that prevented Gemini from starting.
-  - Updated deprecated `--experimental-acp` to `--acp`.
-
-
-## 2.2.8
-- **🔍 Definitve Diagnostic Update (The Witness)**
-  - Implemented `gemini-witness` wrapper to capture all output and exit codes directly to `/config/gemini_crash.log`.
-  - Added strict isolation rules to prevent Gemini from reading its own logs.
-  - Enabled native Node.js crash reporting (`.json` reports in `/config`).
-  - Improved browser copy support with `allowContextMenu=true`.
-
-
-## 2.2.7
-- **✨ UX & Native Experience Update**
-  - Removed annoying "Screen Reader" mode while maintaining stability.
-  - Fixed Copy/Paste: Disabled `tmux` mouse mode to allow native browser text selection.
-  - Hard-disabled background "flickering" tasks (`--no-autocomplete`) to prevent TTY crashes.
-  - Improved startup speed and UI feedback.
-
-
-## 2.2.6
-- **🛡️ Hardened Configuration Override**
-  - Forcibly overwrites `settings.json` on every boot to ensure "YOLO" and "Screen Reader" modes are active.
-  - This prevents Gemini from ignoring command line flags and showing unstable interactive popups.
-  - Switched terminal renderer to `webgl` to improve copy/paste support.
-
-
-## 2.2.5
-- **🎨 UI Restoration & High Stability**
-  - Restored full colors and the dark "Terracotta" theme.
-  - Added `--screen-reader` mode: disables unstable background flickering while keeping full functionality.
-  - Fixed copy/paste support and restored standard browser text selection.
-
-
-## 2.2.4
-- **🛠️ UI & Compatibility Fix**
-  - Fixed "Approval Crash" by forcing `TERM=vt100` (Legacy Mode). This disables unstable mouse-UI popups.
-  - Improved Copy/Paste support: reverted to high-contrast theme and added `Shift+Select` tip.
-  - Aggressively cleaned startup logic to ensure a fresh session every boot.
-
-
-## 2.2.1
-- **🛠️ UI & Core Stability**
-  - Fixed standard copy/paste support by enabling `copyOnSelect` and using a native theme.
-  - Increased Node.js stack size to 10MB to prevent recursion crashes during directory scans.
-  - Improved tmux attachment logic for better browser-to-container reliability.
-
-
-## 2.3.5
-- **🛠️ Config & Diagnostic Fix**
-  - Fixed invalid `settings.json` format causing startup warnings.
-  - Improved internal log extraction using `find` to ensure diagnostic traces are captured.
-  - Explicitly allocated memory stack to the Node.js process to improve stability during complex reasoning.
-
-
-## 2.3.4
-- **🛠️ Boot & Auth Fix**
-  - Fixed "unrecognized option: ping-timeout" which caused terminal boot failure.
-  - Fixed MCP authentication by ensuring `GEMINI_API_KEY` is exported during setup.
-  - Maintains internal trace extraction for better debugging.
-
-
-## 2.3.3
-- **🔍 Post-Mortem Exit Diagnostics**
-  - Implemented automatic extraction of Gemini's internal hidden logs upon exit.
-  - Internal trace is now saved to `/config/gemini_internal_trace.log` for easy reading.
-  - Added exit code reporting directly to the terminal screen.
-  - Stabilized terminal input to prevent premature exit signals.
-
-
-## 2.4.3
-- **🛠️ Config & Memory Fix**
-  - Fixed "Invalid Input" configuration warning by removing the invalid telemetry key.
-  - Explicitly unlocked 8GB RAM for the Node.js process to prevent crashes on complex tasks.
-  - Maintains native tmux TTY for stability.
-
-
-## 2.4.2
-- **🛠️ TTY Stability Update**
-  - Replaced unstable `script` command with a native `tmux` TTY manager.
-  - This prevents "Clean Exits" (Code 0) during heavy file searches like `find /`.
-  - Fixed TTY detection to ensure Node.js doesn't think it's being piped.
-  - Maintains mouse-off mode for native browser copy/paste.
-
+## 2.5.6
+- **🚀 Stable Capability: GitHub CLI Integration**
+  - Added the official `gh` (GitHub CLI) tool into the add-on image.
+  - Reverted to the stable `v2.4.x` foundation with manual `musl` rebuilds for native modules.
+  - Maintains full capability for `ha` CLI and `ha-mcp` (via pip).
 
 ## 2.5.5
 - **🛠️ Fixed Build 404 & Missing Scripts**
@@ -179,14 +54,12 @@
   - Silenced build-time warnings for `BUILD_FROM` and `npm` flags.
   - Maintains full capability for `ha-mcp` (via pip) and Gemini CLI.
 
-
 ## 2.5.4
 - **🛠️ Reverted to Universal Base for Build Stability**
   - Reverted `build.yaml` to the standard Alpine-based Home Assistant base image.
   - Re-added explicit `nodejs` and `npm` installs for better compatibility across all HA environments.
   - Improved `ha` CLI download logic to handle more architecture names.
   - This should fix the "Instant Build Failure" on non-standard systems.
-
 
 ## 2.5.3
 - **🚀 Node-Optimized Build**
@@ -195,13 +68,11 @@
   - Removed slow manual `npm rebuild` and `apk add nodejs` steps.
   - Improved `npm install` stability with `--unsafe-perm` flag.
 
-
 ## 2.5.2
 - **🛠️ Final Build Error Fix**
   - Fixed "Unknown Error" during image build by using the official `BUILD_ARCH` Home Assistant build argument.
   - Replaced manual `uname -m` with the built-in HA Supervisor architecture detection.
   - This ensures the correct `ha` CLI binary is always downloaded regardless of your system.
-
 
 ## 2.5.1
 - **🛠️ Universal Build Fix**
@@ -209,31 +80,20 @@
   - Automatically detects AMD64, AARCH64 (Pi), and ARMv7 during the Docker build process.
   - Corrected file mappings for `run.sh` inside the image.
 
-
 ## 2.5.0
 - **🚀 New Capability: GitHub CLI Integration**
   - Added the official `gh` (GitHub CLI) tool into the add-on image.
   - Gemini can now natively manage pull requests, issues, and releases from the terminal.
   - Full persistence of GitHub authentication via the existing `/data` volume.
 
-
-## 2.5.6
-- **🚀 Stable Capability: GitHub CLI Integration**
-  - Added the official `gh` (GitHub CLI) tool into the add-on image.
-  - Reverted to the stable `v2.4.x` foundation with manual `musl` rebuilds for native modules.
-  - Maintains full capability for `ha` CLI and `ha-mcp` (via pip).
-
-
 ## 2.4.21
 - **🛠️ Startup Fix**
   - Fixed a typo in the `tmux attach` command that was preventing the UI from loading.
-
 
 ## 2.4.20
 - **🛠️ Boot Loop Fix**
   - Fixed "unbound variable" error in startup script when Gemini API key is not provided.
   - Allows add-on to start normally even without a key (so you can configure it via the terminal).
-
 
 ## 2.4.19
 - **✨ Smooth Scrolling & Huge History**
@@ -242,14 +102,12 @@
   - Added `aggressive-resize` to ensure terminal follows browser window size correctly.
   - Added "Shift+Select" tip for native copy/paste while mouse mode is active.
 
-
 ## 2.4.18
 - **🛡️ Persistent Session Support**
   - Gemini now runs in a background `tmux` session: survives browser reloads and laptop sleep.
   - Re-attach to your work at any time by simply opening the add-on UI.
   - Forced `mouse off` in tmux to allow native browser text selection (Copy/Paste).
   - Maintains all previous stability fixes: Native builds, NO_RELAUNCH, and Sandbox-off.
-
 
 ## 2.4.17
 - **✨ Feature: Install `ha` CLI for Home Assistant Supervisor access**
@@ -337,6 +195,18 @@
   - Properly disabled background tasks using the `--no-acp` flag.
   - Aggressive 1-second heartbeat to prevent Home Assistant proxy timeouts.
 
+## 2.4.3
+- **🛠️ Config & Memory Fix**
+  - Fixed "Invalid Input" configuration warning by removing the invalid telemetry key.
+  - Explicitly unlocked 8GB RAM for the Node.js process to prevent crashes on complex tasks.
+  - Maintains native tmux TTY for stability.
+
+## 2.4.2
+- **🛠️ TTY Stability Update**
+  - Replaced unstable `script` command with a native `tmux` TTY manager.
+  - This prevents "Clean Exits" (Code 0) during heavy file searches like `find /`.
+  - Fixed TTY detection to ensure Node.js doesn't think it's being piped.
+  - Maintains mouse-off mode for native browser copy/paste.
 
 ## 2.4.1
 - **🛡️ Persistent Terminal Shield**
@@ -345,7 +215,6 @@
   - Safe Resources: Reduced memory limit to 4GB to prevent OOM kills on smaller hosts.
   - Maintains full crash diagnostics and interactive approvals.
 
-
 ## 2.4.0
 - **🛡️ Mandatory TTY & PTY Fix**
   - Implemented the "Pseudo-Terminal (PTY) Hack" using the `script` command to ensure Gemini correctly detects an interactive session.
@@ -353,6 +222,24 @@
   - Removed all background layers: Gemini now runs directly in the TTY for perfect keyboard/diff interaction.
   - Maintains stable memory heap and aggressive heartbeat.
 
+## 2.3.5
+- **🛠️ Config & Diagnostic Fix**
+  - Fixed invalid `settings.json` format causing startup warnings.
+  - Improved internal log extraction using `find` to ensure diagnostic traces are captured.
+  - Explicitly allocated memory stack to the Node.js process to improve stability during complex reasoning.
+
+## 2.3.4
+- **🛠️ Boot & Auth Fix**
+  - Fixed "unrecognized option: ping-timeout" which caused terminal boot failure.
+  - Fixed MCP authentication by ensuring `GEMINI_API_KEY` is exported during setup.
+  - Maintains internal trace extraction for better debugging.
+
+## 2.3.3
+- **🔍 Post-Mortem Exit Diagnostics**
+  - Implemented automatic extraction of Gemini's internal hidden logs upon exit.
+  - Internal trace is now saved to `/config/gemini_internal_trace.log` for easy reading.
+  - Added exit code reporting directly to the terminal screen.
+  - Stabilized terminal input to prevent premature exit signals.
 
 ## 2.3.2
 - **✨ Full Interactivity Restored**
@@ -361,13 +248,72 @@
   - Switched to direct foreground execution for perfect TTY and keyboard detection.
   - Cleaned up experimental background logic for a more predictable experience.
 
-
 ## 2.3.1
 - **🛠️ Ultra-Stable Mode**
   - Switched to `-y` flag for absolute YOLO mode to bypass all approval prompts.
   - Forced `TERM=linux` to disable unstable terminal UI features.
   - Added detection of existing crash reports in startup logs.
 
+## 2.3.0
+- **🛠️ Interactivity & Config Fix**
+  - Fixed "No input provided via stdin" by switching to passive tmux logging.
+  - Fixed invalid `settings.json` format causing startup errors.
+  - Maintains full crash diagnostics in `/config/gemini_crash.log` without breaking the TTY.
+
+## 2.2.9
+- **🛠️ Fix Startup Error**
+  - Removed invalid `autocomplete` arguments that prevented Gemini from starting.
+  - Updated deprecated `--experimental-acp` to `--acp`.
+
+## 2.2.8
+- **🔍 Definitive Diagnostic Update (The Witness)**
+  - Implemented `gemini-witness` wrapper to capture all output and exit codes directly to `/config/gemini_crash.log`.
+  - Added strict isolation rules to prevent Gemini from reading its own logs.
+  - Enabled native Node.js crash reporting (`.json` reports in `/config`).
+  - Improved browser copy support with `allowContextMenu=true`.
+
+## 2.2.7
+- **✨ UX & Native Experience Update**
+  - Removed annoying "Screen Reader" mode while maintaining stability.
+  - Fixed Copy/Paste: Disabled `tmux` mouse mode to allow native browser text selection.
+  - Hard-disabled background "flickering" tasks (`--no-autocomplete`) to prevent TTY crashes.
+  - Improved startup speed and UI feedback.
+
+## 2.2.6
+- **🛡️ Hardened Configuration Override**
+  - Forcibly overwrites `settings.json` on every boot to ensure "YOLO" and "Screen Reader" modes are active.
+  - This prevents Gemini from ignoring command line flags and showing unstable interactive popups.
+  - Switched terminal renderer to `webgl` to improve copy/paste support.
+
+## 2.2.5
+- **🎨 UI Restoration & High Stability**
+  - Restored full colors and the dark "Terracotta" theme.
+  - Added `--screen-reader` mode: disables unstable background flickering while keeping full functionality.
+  - Fixed copy/paste support and restored standard browser text selection.
+
+## 2.2.4
+- **🛠️ UI & Compatibility Fix**
+  - Fixed "Approval Crash" by forcing `TERM=vt100` (Legacy Mode). This disables unstable mouse-UI popups.
+  - Improved Copy/Paste support: reverted to high-contrast theme and added `Shift+Select` tip.
+  - Aggressively cleaned startup logic to ensure a fresh session every boot.
+
+## 2.2.3
+- **🛡️ Strict Isolation Fix**
+  - Permanently removed `gemini-logs` from the config directory to break recursive crash loops.
+  - Switched terminal renderer to `canvas` to improve text selection/copy support in browser iframes.
+  - Added `GEMINI_MAX_FILE_SIZE_BYTES` limit to prevent memory exhaustion on large files.
+
+## 2.2.2
+- **🛠️ Fixed Startup & Clipboard**
+  - Fixed "stack-size not allowed" error by passing the flag directly to the Node binary.
+  - Forced clipboard support with `enableClipboard=true` to fix copy issues.
+  - Improved background launch reliability.
+
+## 2.2.1
+- **🛠️ UI & Core Stability**
+  - Fixed standard copy/paste support by enabling `copyOnSelect` and using a native theme.
+  - Increased Node.js stack size to 10MB to prevent recursion crashes during directory scans.
+  - Improved tmux attachment logic for better browser-to-container reliability.
 
 ## 2.2.0
 - **🛡️ Persistent Daemon Architecture**
@@ -376,7 +322,6 @@
   - Forced `TERM=vt100` for the background session to prevent UI corruption.
   - Auto-Reconnect: Simply refresh your browser to re-attach to your active work.
 
-
 ## 2.1.0
 - **🚀 Stability Mega-Fix**
   - Re-integrated critical stability flags discovered during 1.x testing into the stable 2.x foundation.
@@ -384,6 +329,10 @@
   - Disabled unstable background features (`--experimental-acp false`) and output sanitization (`--raw-output`) to prevent engine panic.
   - Increased thread pool size for better performance during complex tasks.
 
+## 2.0.7
+- **⚡ Interface Stability Fix**
+  - Disabled experimental background tasks (`--experimental-acp false`) that caused terminal corruption and crashes during large outputs.
+  - Forced stable interactive mode to prevent V8 engine assertion failures.
 
 ## 2.0.6
 - **🔍 Deep Screen Capture**
@@ -391,6 +340,33 @@
   - These "Screen Logs" are automatically streamed to the Home Assistant "Logs" tab for debugging.
   - This method is non-invasive and cannot cause blank screens or process hangs.
 
+## 2.0.5
+- **🔍 Improved Log Visibility**
+  - Implemented real-time log streaming from Gemini internal logs to the Home Assistant "Logs" tab.
+  - Internal Gemini events will now appear with a `[Gemini-Internal]` prefix.
+
+## 2.0.4
+- **🛠️ Log Mirroring & Boot Fix**
+  - Reverted direct log writing to fix boot failures.
+  - Implemented background log mirroring to `/config/gemini-logs` for safe, read-only access.
+  - Kept 4GB RAM unlock and disabled sandbox for maximum stability.
+
+## 2.0.3
+- **🛠️ Log Access & Stability Fix**
+  - Changed internal log path to a real folder (`/config/gemini-logs`) to fix "Access Denied" errors in File Editor.
+  - Explicitly disabled Gemini sandbox (`--sandbox false`) for better container compatibility.
+
+## 2.0.2
+- **⚙️ Memory & Diagnostics Fix**
+  - Increased RAM limit to 4GB and CPU to 4.0.
+  - Explicitly allocated 4GB to Node.js heap to prevent OOM crashes on complex tasks.
+  - Created `/config/gemini-logs` symlink for easier access to internal logs.
+  - Added `/config/gemini_system.log` to track resource limits.
+
+## 2.0.1
+- **🛡️ Timeout & Performance Fix**
+  - Reduced ttyd ping-interval to 5s to prevent Home Assistant Ingress timeouts during long tasks.
+  - Added default `.geminiignore` to skip large database files, improving directory scan speed.
 
 ## 2.0.0
 - **🚀 Stable Release Redux**
@@ -398,31 +374,20 @@
   - Added `gemini_debug` setting to toggle the `--debug` flag.
   - Integrated internal Gemini logs into the Home Assistant Add-on logs for easier troubleshooting.
 
-## 1.1.0
-
-- **🛠️ Fixes**
-  - Fixed "WebSocket not authenticated" error for Home Assistant MCP tools.
-  - Upgraded add-on permissions to "admin" for full entity and dashboard control.
-  - Added compatibility environment variables (HASS_TOKEN/HASS_URL) for the MCP server.
-
-
 ## 1.1.4
 - **⚡ Performance & UX**
   - Removed the welcome screen entirely for a faster, cleaner startup.
   - Added a "Initializing Gemini Terminal..." indicator for better feedback during loading.
-
 
 ## 1.1.3
 - **⚡ UX Improvements**
   - Removed the "Press Enter to continue" prompt on startup for faster access.
   - Updated welcome banner with correct version history.
 
-
 ## 1.1.2
 - **📖 Documentation**
   - Added "Safety & Guardrails" section to clarify how Gemini handles file edits.
   - Documented "Plan Mode" (`--approval-mode plan`) for dry-runs.
-
 
 ## 1.1.1
 - **🛠️ Fixes**

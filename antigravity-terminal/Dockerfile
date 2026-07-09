@@ -35,7 +35,9 @@ ENV NODE_ENV=production \
 # - curl/ca-certificates: For downloading ttyd
 # - procps: Provides pgrep for health check
 # - tmux: Session persistence to prevent multiple Antigravity CLI instances
-# - chromium: Headless browser for screenshot_url MCP tool (visual verification)
+# - chromium: Headless browser for screenshot_url MCP tool (visual verification).
+#   NOTE: ~200 MB. If you never use the screenshot feature you can omit this
+#   package and puppeteer-core in a custom build (set screenshot_enabled: false).
 # - nano, vim, tree, yq: User requested terminal tools
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -90,6 +92,9 @@ RUN curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- -d /usr/lo
 COPY rootfs/opt/ha-mcp-server/package*.json /opt/ha-mcp-server/
 
 # Install MCP dependencies
+# TODO: switch to `npm ci --omit=dev` once package-lock.json is committed.
+# Generate it by running `npm install` locally in rootfs/opt/ha-mcp-server/
+# and committing the resulting package-lock.json for reproducible builds.
 RUN (cd /opt/ha-mcp-server && npm install --omit=dev) \
     && npm cache clean --force
 
@@ -106,6 +111,11 @@ RUN chmod +x /usr/local/bin/* \
 
 # Set working directory to HA config (mounted at runtime)
 WORKDIR /homeassistant
+
+# Health check – lets the Supervisor detect a stuck or crashed container.
+# Verifies that the ttyd web-terminal process is running.
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+  CMD pgrep -x ttyd > /dev/null || exit 1
 
 # Labels for Home Assistant
 LABEL \

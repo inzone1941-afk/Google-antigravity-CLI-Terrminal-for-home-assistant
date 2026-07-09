@@ -191,20 +191,21 @@ fi
 
 if [ "$MCP_ENABLED" = "true" ]; then
     bashio::log.info "Configuring MCP server..."
-    # The ha-mcp-server is located at /opt/ha-mcp-server/index.js
+    # Tokens (SUPERVISOR_TOKEN, HA_ACCESS_TOKEN, SCREENSHOT_ENABLED) are NOT stored
+    # in this file. They are injected into the MCP process environment at runtime
+    # via the sourced /data/.env_vars file, which is chmod 600 and only readable
+    # by the addon process. This prevents token leakage in backups or config reads.
     jq '.mcpServers["home-assistant"] = {
         "command": "node",
-        "args": ["/opt/ha-mcp-server/index.js"],
-        "env": {
-            "SUPERVISOR_TOKEN": "'$SUPERVISOR_TOKEN'",
-            "HA_ACCESS_TOKEN": "'$ACCESS_TOKEN'",
-            "SCREENSHOT_ENABLED": "'$SCREENSHOT_ENABLED'"
-        }
+        "args": ["/opt/ha-mcp-server/index.js"]
     }' "$AGY_USER_DIR/mcp_config.json" > "$AGY_USER_DIR/mcp_config.tmp" && mv "$AGY_USER_DIR/mcp_config.tmp" "$AGY_USER_DIR/mcp_config.json"
 else
     bashio::log.info "Disabling MCP server..."
     jq 'del(.mcpServers["home-assistant"])' "$AGY_USER_DIR/mcp_config.json" > "$AGY_USER_DIR/mcp_config.tmp" && mv "$AGY_USER_DIR/mcp_config.tmp" "$AGY_USER_DIR/mcp_config.json"
 fi
+
+# Restrict config file permissions to prevent token leakage
+chmod 600 "$AGY_USER_DIR/mcp_config.json"
 
 # ==============================================================================
 # Install Persistent Packages

@@ -4,8 +4,19 @@
 # =============================================================================
 
 # Load user-defined environment variables (written by init-antigravity)
+# Security: verify file permissions (600) and ownership before sourcing
+# to prevent code injection if the file were modified by another process.
 if [ -f /data/.env_vars ]; then
-    source /data/.env_vars
+    _env_perms=$(stat -c "%a" /data/.env_vars 2>/dev/null || echo "777")
+    _env_owner=$(stat -c "%u" /data/.env_vars 2>/dev/null || echo "0")
+    _my_uid=$(id -u)
+    if [ "$_env_perms" = "600" ] && [ "$_env_owner" = "$_my_uid" ]; then
+        # shellcheck source=/dev/null
+        source /data/.env_vars
+    else
+        echo "Warning: /data/.env_vars has unsafe permissions ($_env_perms) or wrong owner ($_env_owner vs $_my_uid) – skipping."
+    fi
+    unset _env_perms _env_owner _my_uid
 fi
 
 # Ensure SUPERVISOR_TOKEN is available for MCP server
